@@ -42,8 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.humanize',
-    # VSS Dependencies
+    # VSS Dependencies    
     'django_quill',
+    # VSS Notary Dependencies
+    'rest_framework',
     # VSS Apps
     'vss',
     'vss.apps.dashboard',
@@ -347,3 +349,10 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}
