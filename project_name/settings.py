@@ -310,7 +310,7 @@ VSS_DASHBOARD_REGISTRY = [
         'admin_data' : [
             'vss.apps.data.vss_admin.SiteBrandingDataAdmin',
             'vss_notary.apps.contact.vss_admin.ContactDataAdmin',
-            'vss_notary.apps.officehours.vss_admin.AvailabilityAdmin',
+            'vss_notary.apps.officehours.vss_admin.OfficeHourAdmin',
             'vss.apps.data.vss_admin.SiteSocialNetworkAdmin',
             'vss.apps.accounts.vss_admin.UserAdmin',
         ]
@@ -323,7 +323,6 @@ VSS_DASHBOARD_INDEX = {
     #     vssadmin.sitedata_model != True
     'quick_links' : [
         'vss_notary.apps.workorders.vss_admin.WorkOrderAdmin',
-        'vss.apps.components.vss_admin.FAQAdmin',
         'vss.apps.accounts.vss_admin.UserAdmin',
     ],
     # Muestra los 5 elementos mas recientes en una lista
