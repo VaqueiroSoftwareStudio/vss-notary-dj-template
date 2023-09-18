@@ -42,10 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.humanize',
-    # VSS Dependencies    
+    # VSS Dependencies
     'django_quill',
     # VSS Notary Dependencies
-    'rest_framework',
+    'maintenance_mode',
     # VSS Apps
     'vss',
     'vss.apps.dashboard',
@@ -56,12 +56,9 @@ INSTALLED_APPS = [
     # VSS Notary Apps
     'vss_notary',
     'vss_notary.apps',
-    'vss_notary.apps.contact',
     'vss_notary.apps.officehours',
     'vss_notary.apps.services',
-    'vss_notary.apps.customers',
-    'vss_notary.apps.workorders',
-    'vss_notary.apps.reviews',
+    'vss_notary.apps.website',
 ]
 
 MIDDLEWARE = [
@@ -74,6 +71,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'vss.middleware.DisableClientSideCachingMiddleware',
+    # NOTE: Maintenance mode must be last.
+    'maintenance_mode.middleware.MaintenanceModeMiddleware',
 ]
 
 ROOT_URLCONF = '{{ project_name }}.urls'
@@ -93,6 +92,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.static',
                 'vss.context_processors.vss',
+                'vss_notary.apps.context_processors.vss_notary',
             ],
         },
     },
@@ -244,7 +244,7 @@ MESSAGE_TAGS = {
 
 # Auth
 AUTH_USER_MODEL = 'accounts.User'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 LOGIN_URL = '/accounts/login/'
 
@@ -280,40 +280,62 @@ QUILL_CONFIGS = {
     }
 }
 
-# Requisitos para VSS Studio
+# Requisitos para VSS Notary
 
 VSS_DASHBOARD_REGISTRY = [
     {
-        'group_name': _('Escrituras'),
+        'group_name': _('Blog'),
         'admin_data' : [
-            'vss_notary.apps.workorders.vss_admin.WorkOrderAdmin',
-            'vss_notary.apps.customers.vss_admin.CustomerAdmin',
-            'vss_notary.apps.customers.vss_admin.BusinessStructureAdmin',
+            'vss.apps.blog.vss_admin.ArticleAdmin',
+            'vss.apps.blog.vss_admin.CategoryAdmin',
+            'vss.apps.blog.vss_admin.ArticleCommentAdmin',
+        ]
+    },
+    {
+        'group_name': _('Marketing'),
+        'admin_data' : [
+            'vss_notary.apps.website.vss_admin.BannerAdmin',
+            'vss.apps.components.vss_admin.FAQAdmin',
+            'vss.apps.components.vss_admin.TestimonialAdmin',
         ]
     },
     {
         'group_name': _('Servicios'),
         'admin_data' : [
+            'vss_notary.apps.services.vss_admin.ServiceRequirementAdmin',
             'vss_notary.apps.services.vss_admin.ServiceAdmin',
-            'vss_notary.apps.services.vss_admin.StageAdmin',
-            'vss_notary.apps.services.vss_admin.RequirementAdmin',
+        ]
+    },
+]
+
+VSS_DASHBOARD_SETTINGS = [
+    {
+        'group_name': _('Contacto'),
+        'admin_data' : [
+            'vss.apps.data.vss_admin.SiteSocialNetworkAdmin',
+            'vss.apps.data.vss_admin.SiteContactDataAdmin',
         ]
     },
     {
-        'group_name': _('Opiniones'),
+        'group_name': _('Empresa'),
         'admin_data' : [
-            'vss_notary.apps.reviews.vss_admin.CustomerReviewAdmin',
+            'vss_notary.apps.officehours.vss_admin.OfficeHourAdmin',
+            'vss.apps.components.vss_admin.TextPageAdmin',
         ]
-    }, 
+    },
     {
-        'group_name': _('Configuración'),
+        'group_name': _('Sitio Web'),
         'admin_data' : [
             'vss.apps.data.vss_admin.SiteBrandingDataAdmin',
-            'vss_notary.apps.contact.vss_admin.ContactDataAdmin',
-            'vss_notary.apps.officehours.vss_admin.OfficeHourAdmin',
-            'vss.apps.data.vss_admin.SiteSocialNetworkAdmin',
-            'vss.apps.accounts.vss_admin.UserAdmin',
+            'vss.apps.data.vss_admin.SiteGoogleServicesAdmin',
+            'vss.apps.data.vss_admin.SiteSnippetsAdmin',
         ]
+    },
+    {
+        "group_name": _("Dashboard"),
+        "admin_data": [
+            "vss.apps.accounts.vss_admin.UserAdmin",
+        ],
     },
 ]
 
@@ -322,13 +344,15 @@ VSS_DASHBOARD_INDEX = {
     #     vssadmin.enable_create = True
     #     vssadmin.sitedata_model != True
     'quick_links' : [
-        'vss_notary.apps.workorders.vss_admin.WorkOrderAdmin',
+        'vss.apps.blog.vss_admin.ArticleAdmin',
+        'vss_notary.apps.website.vss_admin.BannerAdmin',
+        'vss.apps.components.vss_admin.FAQAdmin',
+        'vss.apps.components.vss_admin.TestimonialAdmin',
         'vss.apps.accounts.vss_admin.UserAdmin',
     ],
     # Muestra los 5 elementos mas recientes en una lista
     'quick_view' : [
-        'vss_notary.apps.workorders.vss_admin.WorkOrderAdmin',
-        'vss_notary.apps.reviews.vss_admin.CustomerReviewAdmin',
+        'vss.apps.blog.vss_admin.ArticleCommentAdmin',       
     ]
 }
 
@@ -336,12 +360,10 @@ VSS_PROJECT_TIME_ZONE = 'America/Mexico_City'
 
 VSS_DASHBOARD_BANNER = 'vss_notary/img/vss_banner.png'
 
-FIREBASE_SERVICE_ACCOUNT_KEY = os.path.join(BASE_DIR, 'secrets/firebase-adminsdk.json')
-
 # NOTE: Necesitamos este setting en django 4.0+ para que el popup de PayPal funcione correctamente.
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800 # 50MB
 
 ADMINS = (
     ('VSS', 'contacto@vaqueiro.com.mx'),
@@ -354,4 +376,18 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     )
+}
+
+MAINTENANCE_MODE = False
+MAINTENANCE_MODE_IGNORE_AUTHENTICATED_USER = True
+MAINTENANCE_MODE_IGNORE_URLS = (r'^/accounts/login/', r'^/media/', r'^/static/',)
+# NOTE: Esto nos permite evitar que django mande emails de error 503 en
+# modo mantenimiento.
+LOGGING = {
+    'version': 1,
+    "filters": {
+        "require_not_maintenance_mode_503": {
+            "()": "maintenance_mode.logging.RequireNotMaintenanceMode503",
+        },
+    },
 }
