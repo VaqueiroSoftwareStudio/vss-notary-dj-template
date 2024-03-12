@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'vss_notary.apps',
     'vss_notary.apps.officehours',
     'vss_notary.apps.services',
+    "vss_notary.apps.team",
     'vss_notary.apps.website',
 ]
 
@@ -281,55 +282,61 @@ QUILL_CONFIGS = {
 }
 
 # Requisitos para VSS Notary
-
 VSS_DASHBOARD_REGISTRY = [
     {
-        'group_name': _('Blog'),
-        'admin_data' : [
-            'vss.apps.blog.vss_admin.ArticleAdmin',
-            'vss.apps.blog.vss_admin.CategoryAdmin',
-            'vss.apps.blog.vss_admin.ArticleCommentAdmin',
-        ]
+        "group_name": _("Blog"),
+        "admin_data": [
+            "vss.apps.blog.vss_admin.ArticleAdmin",
+            "vss.apps.blog.vss_admin.CategoryAdmin",
+            "vss.apps.blog.vss_admin.ArticleCommentAdmin",
+        ],
     },
     {
-        'group_name': _('Marketing'),
-        'admin_data' : [
-            'vss_notary.apps.website.vss_admin.BannerAdmin',
-            'vss.apps.components.vss_admin.FAQAdmin',
-            'vss.apps.components.vss_admin.TestimonialAdmin',
-        ]
+        "group_name": _("Equipo"),
+        "admin_data": [
+            "vss_notary.apps.team.vss_admin.TeamMemberAdmin",
+        ],
     },
     {
-        'group_name': _('Servicios'),
-        'admin_data' : [
-            'vss_notary.apps.services.vss_admin.ServiceRequirementAdmin',
-            'vss_notary.apps.services.vss_admin.ServiceAdmin',
-        ]
+        "group_name": _("Marketing"),
+        "admin_data": [
+            "vss_notary.apps.website.vss_admin.BannerAdmin",
+            "vss.apps.components.vss_admin.FAQAdmin",
+            "vss.apps.components.vss_admin.TestimonialAdmin",
+        ],
+    },
+    {
+        "group_name": _("Servicios"),
+        "admin_data": [
+            "vss_notary.apps.services.vss_admin.ServiceRequirementAdmin",
+            "vss_notary.apps.services.vss_admin.ServiceCategoryAdmin",
+            "vss_notary.apps.services.vss_admin.ServiceAdmin",
+        ],
     },
 ]
 
 VSS_DASHBOARD_SETTINGS = [
     {
-        'group_name': _('Contacto'),
-        'admin_data' : [
-            'vss.apps.data.vss_admin.SiteSocialNetworkAdmin',
-            'vss.apps.data.vss_admin.SiteContactDataAdmin',
-        ]
+        "group_name": _("Contacto"),
+        "admin_data": [
+            "vss.apps.data.vss_admin.SiteSocialNetworkAdmin",
+            "vss.apps.data.vss_admin.SiteContactDataAdmin",
+        ],
     },
     {
-        'group_name': _('Empresa'),
-        'admin_data' : [
-            'vss_notary.apps.officehours.vss_admin.OfficeHourAdmin',
-            'vss.apps.components.vss_admin.TextPageAdmin',
-        ]
+        "group_name": _("Empresa"),
+        "admin_data": [
+            "vss_notary.apps.officehours.vss_admin.OfficeHourAdmin",
+            "vss.apps.components.vss_admin.TextPageAdmin",
+        ],
     },
     {
-        'group_name': _('Sitio Web'),
-        'admin_data' : [
-            'vss.apps.data.vss_admin.SiteBrandingDataAdmin',
-            'vss.apps.data.vss_admin.SiteGoogleServicesAdmin',
-            'vss.apps.data.vss_admin.SiteSnippetsAdmin',
-        ]
+        "group_name": _("Sitio Web"),
+        "admin_data": [
+            "vss.apps.data.vss_admin.SiteBrandingDataAdmin",
+            "vss.apps.data.vss_admin.SiteGoogleServicesAdmin",
+            "vss.apps.data.vss_admin.SiteSnippetsAdmin",
+        ],
     },
     {
         "group_name": _("Dashboard"),
@@ -343,18 +350,19 @@ VSS_DASHBOARD_INDEX = {
     # Muestra un enlace a model.create.view si:
     #     vssadmin.enable_create = True
     #     vssadmin.sitedata_model != True
-    'quick_links' : [
-        'vss.apps.blog.vss_admin.ArticleAdmin',
-        'vss_notary.apps.website.vss_admin.BannerAdmin',
-        'vss.apps.components.vss_admin.FAQAdmin',
-        'vss.apps.components.vss_admin.TestimonialAdmin',
-        'vss.apps.accounts.vss_admin.UserAdmin',
+    "quick_links": [
+        "vss.apps.blog.vss_admin.ArticleAdmin",
+        "vss_notary.apps.website.vss_admin.BannerAdmin",
+        "vss.apps.components.vss_admin.FAQAdmin",
+        "vss.apps.components.vss_admin.TestimonialAdmin",
+        "vss.apps.accounts.vss_admin.UserAdmin",
     ],
     # Muestra los 5 elementos mas recientes en una lista
-    'quick_view' : [
-        'vss.apps.blog.vss_admin.ArticleCommentAdmin',       
-    ]
+    "quick_view": [
+        "vss.apps.blog.vss_admin.ArticleCommentAdmin",
+    ],
 }
+
 
 VSS_PROJECT_TIME_ZONE = 'America/Mexico_City'
 
